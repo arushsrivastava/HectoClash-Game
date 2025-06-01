@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HectoClash - Competitive Math Puzzles</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="login-screen" class="screen active">
+            <div class="login-container">
+                <div class="logo">
+                    <h1>HectoClash</h1>
+                    <p>Competitive Mathematical Duels</p>
+                </div>
+                <div class="login-form">
+                    <h2>Enter the Arena</h2>
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter your username" maxlength="20">
+                    </div>
+                    <button id="join-btn" class="btn btn--primary btn--lg btn--full-width">Join Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Lobby -->
+        <div id="lobby-screen" class="screen">
+            <header class="lobby-header">
+                <div class="header-content">
+                    <h1>HectoClash</h1>
+                    <div class="player-info">
+                        <span id="player-name">Player</span>
+                        <span class="rating">Rating: <span id="player-rating">1200</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="lobby-main">
+                <div class="lobby-grid">
+                    <!-- Quick Actions -->
+                    <div class="lobby-section">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Quick Actions</h3>
+                                <div class="action-buttons">
+                                    <button id="quick-match-btn" class="btn btn--primary btn--lg btn--full-width">Quick Match</button>
+                                    <button id="practice-btn" class="btn btn--secondary btn--lg btn--full-width">Practice Mode</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Games -->
+                    <div class="lobby-section">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Active Games</h3>
+                                <div id="active-games-list" class="games-list">
+                                    <div class="game-item">
+                                        <div class="game-players">
+                                            <span>MathMaster vs Calculator</span>
+                                        </div>
+                                        <button class="btn btn--outline btn--sm spectate-btn">Spectate</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leaderboard -->
+                    <div class="lobby-section">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Leaderboard</h3>
+                                <div id="leaderboard-list" class="leaderboard">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                                <button id="view-full-leaderboard" class="btn btn--outline btn--sm btn--full-width">View Full Rankings</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Player Stats -->
+                    <div class="lobby-section">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>Your Statistics</h3>
+                                <div class="stats-grid">
+                                    <div class="stat">
+                                        <span class="stat-value" id="games-played">0</span>
+                                        <span class="stat-label">Games Played</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-value" id="win-rate">0%</span>
+                                        <span class="stat-label">Win Rate</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-value" id="avg-time">--</span>
+                                        <span class="stat-label">Avg Solve Time</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-value" id="fastest-solve">--</span>
+                                        <span class="stat-label">Fastest Solve</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="game-info">
+                        <h2>HectoClash Duel</h2>
+                        <div class="timer">
+                            <span id="time-remaining">3:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-content">
+                    <div class="puzzle-section">
+                        <h3>Find an expression that equals 100</h3>
+                        <div class="puzzle-display">
+                            <div id="puzzle-sequence" class="sequence">1 2 3 4 5 6</div>
+                        </div>
+                    </div>
+
+                    <div class="players-section">
+                        <div class="player-area">
+                            <div class="player-header">
+                                <h4 id="player1-name">You</h4>
+                                <div class="player-status" id="player1-status">Solving...</div>
+                            </div>
+                            <div class="expression-input">
+                                <input type="text" id="player1-input" class="form-control expression-field" placeholder="Enter your expression (e.g., 1 + 2 * 3...)">
+                                <div class="input-feedback" id="player1-feedback"></div>
+                            </div>
+                            <div class="solutions-found">
+                                <h5>Solutions Found:</h5>
+                                <div id="player1-solutions" class="solutions-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="player-area">
+                            <div class="player-header">
+                                <h4 id="player2-name">Opponent</h4>
+                                <div class="player-status" id="player2-status">Solving...</div>
+                            </div>
+                            <div class="opponent-progress">
+                                <div class="typing-indicator" id="opponent-typing">Typing...</div>
+                                <div class="solutions-found">
+                                    <h5>Solutions Found:</h5>
+                                    <div id="player2-solutions" class="solutions-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-actions">
+                    <button id="quit-game-btn" class="btn btn--outline">Quit Game</button>
+                    <button id="hint-btn" class="btn btn--secondary">Hint</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practice Screen -->
+        <div id="practice-screen" class="screen">
+            <div class="practice-container">
+                <div class="practice-header">
+                    <h2>Practice Mode</h2>
+                    <button id="back-to-lobby" class="btn btn--outline">Back to Lobby</button>
+                </div>
+
+                <div class="practice-content">
+                    <div class="puzzle-section">
+                        <h3>Find expressions that equal 100</h3>
+                        <div class="puzzle-display">
+                            <div id="practice-sequence" class="sequence">1 2 3 4 5 6</div>
+                        </div>
+                        <button id="new-puzzle-btn" class="btn btn--secondary">New Puzzle</button>
+                    </div>
+
+                    <div class="practice-input">
+                        <input type="text" id="practice-input" class="form-control expression-field" placeholder="Enter your expression">
+                        <div class="input-feedback" id="practice-feedback"></div>
+                        <button id="check-solution-btn" class="btn btn--primary">Check Solution</button>
+                        <button id="get-hint-btn" class="btn btn--secondary">Get Hint</button>
+                    </div>
+
+                    <div class="practice-solutions">
+                        <h4>Your Solutions:</h4>
+                        <div id="practice-solutions-list" class="solutions-list"></div>
+                    </div>
+
+                    <div class="practice-help">
+                        <h4>How to Play Hectoc:</h4>
+                        <ul>
+                            <li>Use the 6 digits in order (don't rearrange)</li>
+                            <li>Insert mathematical operations: +, -, ×, ÷, ^</li>
+                            <li>Use parentheses to control order of operations</li>
+                            <li>Combine adjacent digits (e.g., "12" from "1" and "2")</li>
+                            <li>Goal: Make the expression equal exactly 100</li>
+                        </ul>
+                        <p><strong>Example:</strong> For "123456" → "1 + (2 + 3 + 4) × (5 + 6)" = 100</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="results-container">
+                <div class="results-header">
+                    <h2 id="game-result">Game Results</h2>
+                </div>
+
+                <div class="results-content">
+                    <div class="final-scores">
+                        <div class="player-result">
+                            <h3 id="result-player1">You</h3>
+                            <div class="result-stats">
+                                <div>Solutions: <span id="result-p1-solutions">0</span></div>
+                                <div>Time: <span id="result-p1-time">--</span></div>
+                            </div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="player-result">
+                            <h3 id="result-player2">Opponent</h3>
+                            <div class="result-stats">
+                                <div>Solutions: <span id="result-p2-solutions">0</span></div>
+                                <div>Time: <span id="result-p2-time">--</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="optimal-solutions">
+                        <h3>Optimal Solutions:</h3>
+                        <div id="optimal-solutions-list" class="solutions-list"></div>
+                    </div>
+
+                    <div class="rating-change">
+                        <h3>Rating Change: <span id="rating-change-value">+15</span></h3>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button id="play-again-btn" class="btn btn--primary btn--lg">Play Again</button>
+                    <button id="back-to-lobby-results" class="btn btn--secondary">Back to Lobby</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spectator Screen -->
+        <div id="spectator-screen" class="screen">
+            <div class="spectator-container">
+                <div class="spectator-header">
+                    <h2>Spectating Live Duel</h2>
+                    <button id="stop-spectating" class="btn btn--outline">Back to Lobby</button>
+                </div>
+
+                <div class="spectator-content">
+                    <div class="spectator-puzzle">
+                        <h3>Current Puzzle</h3>
+                        <div id="spectator-sequence" class="sequence">1 2 3 4 5 6</div>
+                        <div class="timer">Time: <span id="spectator-timer">3:00</span></div>
+                    </div>
+
+                    <div class="spectator-players">
+                        <div class="spectator-player">
+                            <h4 id="spec-player1">Player 1</h4>
+                            <div class="spec-status" id="spec-status1">Solving...</div>
+                            <div class="spec-solutions" id="spec-solutions1"></div>
+                        </div>
+                        <div class="spectator-player">
+                            <h4 id="spec-player2">Player 2</h4>
+                            <div class="spec-status" id="spec-status2">Solving...</div>
+                            <div class="spec-solutions" id="spec-solutions2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Matching Screen -->
+        <div id="matching-screen" class="screen">
+            <div class="matching-container">
+                <h2>Finding Opponent...</h2>
+                <div class="loading-spinner"></div>
+                <p>Searching for a worthy challenger</p>
+                <button id="cancel-match" class="btn btn--outline">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
