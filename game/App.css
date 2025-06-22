@@ -1,0 +1,144 @@
+/* src/App.css */
+@import url('./styles/variables.css');
+
+/* App-specific styles */
+.App {
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+/* Loading states */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid var(--color-secondary);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--space-16);
+}
+
+.loading-spinner.small {
+  width: 30px;
+  height: 30px;
+  border-width: 2px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* Status indicators */
+.status-success {
+  color: var(--color-success);
+}
+
+.status-warning {
+  color: var(--color-warning);
+}
+
+.status-error {
+  color: var(--color-error);
+}
+
+.status-info {
+  color: var(--color-info);
+}
+
+/* Empty states */
+.empty-state {
+  text-align: center;
+  padding: var(--space-24);
+  color: var(--color-text-secondary);
+}
+
+.empty-state p {
+  margin: var(--space-8) 0;
+}
+
+/* Navigation transitions */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+  .loading-container {
+    padding: var(--space-16);
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Toast notification overrides */
+.Toaster__toast {
+  background: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
+  }
+
+  .fade-in {
+    animation: none;
+  }
+}
+
+/* Focus management */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-border: #000;
+    --color-text: #000;
+    --color-background: #fff;
+  }
+
+  [data-color-scheme="dark"] {
+    --color-border: #fff;
+    --color-text: #fff;
+    --color-background: #000;
+  }
+}

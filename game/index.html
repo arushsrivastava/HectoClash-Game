@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HectoClash - Competitive Mathematical Duels</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <!-- App Container -->
+  <div class="app-container">
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen">
+      <div class="login-container card">
+        <div class="login-header">
+          <h1>HectoClash</h1>
+          <p>Competitive Mathematical Duels</p>
+        </div>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" id="username" class="form-control" placeholder="Enter your username" required>
+          </div>
+          <button type="submit" class="btn btn--primary btn--full-width">Enter Arena</button>
+          <button type="button" id="guest-login" class="btn btn--secondary btn--full-width mt-8">Continue as Guest</button>
+        </form>
+        <div class="game-rules mt-8">
+          <h3>Game Rules</h3>
+          <p>In Hectoc, you must create a mathematical expression using six given digits (in order) to make exactly 100.</p>
+          <p>Example: 123456 → 1 + (2 + 3 + 4) × (5 + 6) = 100</p>
+          <p>Allowed operations: +, -, ×, ÷, ^, (), digit concatenation</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Lobby -->
+    <div id="lobby-screen" class="screen hidden">
+      <nav class="main-nav">
+        <div class="logo">HectoClash</div>
+        <ul class="nav-links">
+          <li><a href="#" data-view="dashboard" class="nav-active">Dashboard</a></li>
+          <li><a href="#" data-view="play">Play</a></li>
+          <li><a href="#" data-view="leaderboard">Leaderboard</a></li>
+          <li><a href="#" data-view="profile">Profile</a></li>
+        </ul>
+        <div class="user-info">
+          <span id="current-user">Guest</span>
+          <button id="logout-btn" class="btn btn--outline btn--sm">Logout</button>
+        </div>
+      </nav>
+      
+      <div class="lobby-content">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="lobby-view">
+          <div class="dashboard-grid">
+            <div class="dashboard-main">
+              <div class="card welcome-card">
+                <div class="card__body">
+                  <h2>Welcome, <span id="welcome-name">Player</span>!</h2>
+                  <p>Ready to test your mathematical skills? Join a match or watch others compete!</p>
+                  <div class="quick-actions">
+                    <button id="find-match-btn" class="btn btn--primary">Find Opponent</button>
+                    <button id="practice-btn" class="btn btn--secondary">Practice Mode</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="featured-matches card">
+                <div class="card__header">
+                  <h3>Live Matches</h3>
+                  <span class="live-indicator">LIVE</span>
+                </div>
+                <div class="card__body">
+                  <ul id="active-matches" class="matches-list">
+                    <li class="empty-state">No active matches at the moment</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="dashboard-sidebar">
+              <div class="card">
+                <div class="card__header">
+                  <h3>Your Stats</h3>
+                </div>
+                <div class="card__body">
+                  <div class="stat-item">
+                    <span class="stat-label">Rating</span>
+                    <span id="user-rating" class="stat-value">1200</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Games Played</span>
+                    <span id="games-played" class="stat-value">0</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Win Rate</span>
+                    <span id="win-rate" class="stat-value">0%</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Avg Solve Time</span>
+                    <span id="avg-time" class="stat-value">0s</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card__header">
+                  <h3>Top Players</h3>
+                </div>
+                <div class="card__body">
+                  <ul id="top-players" class="player-list">
+                    <!-- Will be populated with JS -->
+                  </ul>
+                </div>
+                <div class="card__footer">
+                  <a href="#" data-view="leaderboard" class="btn btn--outline btn--sm btn--full-width">Full Leaderboard</a>
+                </div>
+              </div>
+              
+              <div class="card">
+                <div class="card__header">
+                  <h3>Online Players</h3>
+                </div>
+                <div class="card__body">
+                  <div id="online-count" class="online-count">
+                    <i class="fas fa-circle online-icon"></i>
+                    <span>8 Players Online</span>
+                  </div>
+                  <ul id="online-players" class="player-list">
+                    <!-- Will be populated with JS -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Play View -->
+        <div id="play-view" class="lobby-view hidden">
+          <div class="play-options">
+            <div class="card matchmaking-card">
+              <div class="card__body">
+                <h2>Matchmaking</h2>
+                <p>Find an opponent of similar skill level for a ranked duel.</p>
+                <div id="queue-status" class="queue-status hidden">
+                  <div class="loading-spinner small"></div>
+                  <span>Searching for opponent... <span id="queue-time">0:00</span></span>
+                </div>
+                <button id="queue-btn" class="btn btn--primary btn--full-width">Join Queue</button>
+              </div>
+            </div>
+            
+            <div class="card challenge-card">
+              <div class="card__body">
+                <h2>Challenge a Friend</h2>
+                <p>Send a challenge to a specific player.</p>
+                <input type="text" class="form-control" placeholder="Enter username" id="challenge-username">
+                <button id="challenge-btn" class="btn btn--secondary btn--full-width mt-8">Send Challenge</button>
+              </div>
+            </div>
+            
+            <div class="card practice-card">
+              <div class="card__body">
+                <h2>Practice Mode</h2>
+                <p>Solve puzzles at your own pace with hints available.</p>
+                <button id="start-practice" class="btn btn--outline btn--full-width">Start Practice</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Leaderboard View -->
+        <div id="leaderboard-view" class="lobby-view hidden">
+          <div class="card leaderboard-card">
+            <div class="card__header">
+              <h2>Global Leaderboard</h2>
+              <div class="leaderboard-tabs">
+                <button class="tab-btn active" data-tab="global">Global</button>
+                <button class="tab-btn" data-tab="friends">Friends</button>
+                <button class="tab-btn" data-tab="recent">Recent</button>
+              </div>
+            </div>
+            <div class="card__body">
+              <table class="leaderboard-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Rating</th>
+                    <th>Games</th>
+                    <th>Win Rate</th>
+                    <th>Avg. Time</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                  <!-- Will be populated with JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Profile View -->
+        <div id="profile-view" class="lobby-view hidden">
+          <div class="profile-container">
+            <div class="card profile-card">
+              <div class="card__header">
+                <h2>Your Profile</h2>
+              </div>
+              <div class="card__body">
+                <div class="profile-stats">
+                  <div class="stat-group">
+                    <div class="profile-rating">
+                      <span id="profile-rating-value">1200</span>
+                      <span class="rating-label">Rating</span>
+                    </div>
+                    <div class="stat-row">
+                      <div class="stat-box">
+                        <div class="stat-value" id="profile-games">0</div>
+                        <div class="stat-label">Games</div>
+                      </div>
+                      <div class="stat-box">
+                        <div class="stat-value" id="profile-wins">0</div>
+                        <div class="stat-label">Wins</div>
+                      </div>
+                      <div class="stat-box">
+                        <div class="stat-value" id="profile-winrate">0%</div>
+                        <div class="stat-label">Win Rate</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card achievements-card">
+              <div class="card__header">
+                <h3>Achievements</h3>
+              </div>
+              <div class="card__body">
+                <div class="achievements-grid" id="achievements-container">
+                  <!-- Will be populated with JS -->
+                </div>
+              </div>
+            </div>
+            
+            <div class="card match-history-card">
+              <div class="card__header">
+                <h3>Recent Matches</h3>
+              </div>
+              <div class="card__body">
+                <div id="match-history" class="match-history">
+                  <p class="empty-state">No match history available.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+      <div class="game-header">
+        <div class="round-info">
+          <span class="round-label">Round <span id="current-round">1</span>/3</span>
+          <div class="timer-container">
+            <div class="timer-bar" id="timer-bar"></div>
+            <span class="timer-text" id="timer-text">60</span>
+          </div>
+        </div>
+        <button id="exit-game" class="btn btn--outline btn--sm">Exit Game</button>
+      </div>
+      
+      <div class="game-arena">
+        <div class="player-side" id="player-side">
+          <div class="player-info">
+            <span class="player-name" id="player-name">You</span>
+            <span class="player-rating" id="player-rating">1200</span>
+          </div>
+          <div class="progress-indicator" id="player-progress">
+            <div class="progress-bar"></div>
+          </div>
+          <div class="score-badge" id="player-score">0</div>
+        </div>
+        
+        <div class="game-puzzle">
+          <div class="puzzle-container">
+            <h2>Make 100 using:</h2>
+            <div class="digits-display" id="puzzle-digits">123456</div>
+            <div class="form-group">
+              <input type="text" id="solution-input" class="form-control" placeholder="Enter your solution">
+              <div id="input-feedback" class="input-feedback"></div>
+            </div>
+            <div class="buttons-row">
+              <button id="submit-solution" class="btn btn--primary">Submit</button>
+              <button id="clear-solution" class="btn btn--secondary">Clear</button>
+            </div>
+          </div>
+          <div class="solution-guide">
+            <p>Example: 1+(2+3+4)×(5+6)=100</p>
+            <p>Use +, -, ×, ÷, ^, (), and digit concatenation</p>
+          </div>
+        </div>
+        
+        <div class="opponent-side" id="opponent-side">
+          <div class="player-info">
+            <span class="player-name" id="opponent-name">Opponent</span>
+            <span class="player-rating" id="opponent-rating">1200</span>
+          </div>
+          <div class="progress-indicator" id="opponent-progress">
+            <div class="progress-bar"></div>
+          </div>
+          <div class="score-badge" id="opponent-score">0</div>
+        </div>
+      </div>
+      
+      <div class="game-controls">
+        <div class="operator-buttons">
+          <button class="operator-btn" data-op="+">+</button>
+          <button class="operator-btn" data-op="-">-</button>
+          <button class="operator-btn" data-op="×">×</button>
+          <button class="operator-btn" data-op="÷">÷</button>
+          <button class="operator-btn" data-op="^">^</button>
+          <button class="operator-btn" data-op="(">(</button>
+          <button class="operator-btn" data-op=")">)</button>
+          <button class="operator-btn" data-op="=">=</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Result Screen -->
+    <div id="result-screen" class="screen hidden">
+      <div class="result-container card">
+        <div class="result-header">
+          <h2 id="result-title">Match Results</h2>
+        </div>
+        <div class="result-body">
+          <div class="result-players">
+            <div class="result-player">
+              <div class="player-name" id="result-player-name">You</div>
+              <div class="player-score" id="result-player-score">2</div>
+              <div class="rating-change" id="player-rating-change">+16</div>
+            </div>
+            <div class="result-vs">VS</div>
+            <div class="result-player">
+              <div class="player-name" id="result-opponent-name">Opponent</div>
+              <div class="player-score" id="result-opponent-score">1</div>
+              <div class="rating-change" id="opponent-rating-change">-16</div>
+            </div>
+          </div>
+          
+          <div class="result-details">
+            <h3>Match Summary</h3>
+            <div class="rounds-summary" id="rounds-summary">
+              <!-- Will be populated with JS -->
+            </div>
+            
+            <div class="optimal-solutions">
+              <h3>Optimal Solutions</h3>
+              <ul id="optimal-solutions" class="solutions-list">
+                <!-- Will be populated with JS -->
+              </ul>
+            </div>
+          </div>
+          
+          <div class="result-actions">
+            <button id="rematch-btn" class="btn btn--primary">Rematch</button>
+            <button id="return-lobby" class="btn btn--secondary">Return to Lobby</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Spectator Screen -->
+    <div id="spectator-screen" class="screen hidden">
+      <div class="spectator-header">
+        <h2>Spectating Match</h2>
+        <button id="exit-spectator" class="btn btn--outline btn--sm">Exit</button>
+      </div>
+      
+      <div class="spectator-arena">
+        <div class="spectator-player-side">
+          <div class="player-info">
+            <span class="player-name" id="spec-player1-name">Player 1</span>
+            <span class="player-rating" id="spec-player1-rating">1200</span>
+          </div>
+          <div class="progress-indicator" id="spec-player1-progress">
+            <div class="progress-bar"></div>
+          </div>
+          <div class="score-badge" id="spec-player1-score">0</div>
+          <div class="current-expression" id="spec-player1-expression"></div>
+        </div>
+        
+        <div class="spectator-game-info">
+          <div class="round-info">
+            <span class="round-label">Round <span id="spec-current-round">1</span>/3</span>
+            <div class="timer-container">
+              <div class="timer-bar" id="spec-timer-bar"></div>
+              <span class="timer-text" id="spec-timer-text">60</span>
+            </div>
+          </div>
+          
+          <div class="spectator-puzzle">
+            <h3>Current Puzzle:</h3>
+            <div class="digits-display" id="spec-puzzle-digits">123456</div>
+          </div>
+          
+          <div class="spectator-chat">
+            <div class="chat-messages" id="spec-chat-messages">
+              <div class="chat-message">
+                <span class="chat-username">System:</span>
+                <span class="chat-text">Welcome to spectator mode!</span>
+              </div>
+            </div>
+            <div class="chat-input">
+              <input type="text" class="form-control" id="chat-input" placeholder="Type a message...">
+              <button class="btn btn--primary btn--sm" id="send-chat">Send</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="spectator-player-side">
+          <div class="player-info">
+            <span class="player-name" id="spec-player2-name">Player 2</span>
+            <span class="player-rating" id="spec-player2-rating">1200</span>
+          </div>
+          <div class="progress-indicator" id="spec-player2-progress">
+            <div class="progress-bar"></div>
+          </div>
+          <div class="score-badge" id="spec-player2-score">0</div>
+          <div class="current-expression" id="spec-player2-expression"></div>
+        </div>
+      </div>
+      
+      <div class="spectator-viewers">
+        <div class="viewers-count">
+          <i class="fas fa-eye"></i>
+          <span id="viewers-count">1</span> watching
+        </div>
+      </div>
+    </div>
+    
+    <!-- Notifications -->
+    <div id="notification-container" class="notification-container"></div>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
